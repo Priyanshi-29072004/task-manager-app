@@ -1,10 +1,14 @@
-// models/Task.js
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: false },
   completed: { type: Boolean, default: false },
+  status: {
+    type: String,
+    enum: ["Pending", "Completed"],
+    default: "Pending",
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

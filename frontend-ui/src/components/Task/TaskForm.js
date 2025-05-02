@@ -1,4 +1,3 @@
-// src/components/TaskForm.js
 import React, { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Box } from "@mui/material";
 
@@ -6,7 +5,7 @@ const TaskForm = ({ onSubmit, selectedTask, clearSelected }) => {
   const [task, setTask] = useState({
     title: "",
     description: "",
-    status: "Pending",
+    status: "",
   });
 
   useEffect(() => {

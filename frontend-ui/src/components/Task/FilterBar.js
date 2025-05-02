@@ -1,4 +1,3 @@
-// src/components/FilterBar.js
 import React from "react";
 import { ButtonGroup, Button } from "@mui/material";
 
