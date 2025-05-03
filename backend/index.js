@@ -5,13 +5,11 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = 5000;
 
-// In-memory task list
 let tasks = [];
 
 app.use(cors());
 app.use(express.json());
 
-// Create a new task
 app.post('/api/tasks', (req, res) => {
   const { title, description, status } = req.body;
 
@@ -23,7 +21,7 @@ app.post('/api/tasks', (req, res) => {
     id: uuidv4(),
     title,
     description,
-    status, // "Pending" or "Completed"
+    status,
     createdAt: new Date()
   };
 
@@ -31,12 +29,10 @@ app.post('/api/tasks', (req, res) => {
   res.status(201).json(newTask);
 });
 
-// Get all tasks
 app.get('/api/tasks', (req, res) => {
   res.json(tasks);
 });
 
-// Update a task
 app.put('/api/tasks/:id', (req, res) => {
   const { id } = req.params;
   const { title, description, status } = req.body;
@@ -53,7 +49,7 @@ app.put('/api/tasks/:id', (req, res) => {
   res.json(task);
 });
 
-// Delete a task
+
 app.delete('/api/tasks/:id', (req, res) => {
   const { id } = req.params;
   tasks = tasks.filter(task => task.id !== id);

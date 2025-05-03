@@ -18,7 +18,7 @@ const TaskForm = ({ onSubmit, selectedTask, clearSelected }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(task);
-    setTask({ title: "", description: "", status: "Pending" });
+    setTask({ title: "", description: "", status: "" });
     clearSelected();
   };
 
