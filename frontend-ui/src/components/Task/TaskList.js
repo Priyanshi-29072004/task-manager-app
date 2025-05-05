@@ -1,8 +1,16 @@
 import React from "react";
-import {List,ListItem,ListItemText,IconButton,Chip,Box,} from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Chip,
+  Box,
+  Checkbox,
+} from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 
-const TaskList = ({ tasks, onEdit, onDelete }) => {
+const TaskList = ({ tasks, onEdit, onDelete, onComplete }) => {
   return (
     <List>
       {tasks.map((task) => (
@@ -13,14 +21,19 @@ const TaskList = ({ tasks, onEdit, onDelete }) => {
             alignItems="center"
             width="100%"
           >
-            {/* Task title + description */}
-            <ListItemText
-              primary={task.title}
-              secondary={task.description}
-              sx={{ flex: 1 }}
-            />
+            {/* Checkbox and task info */}
+            <Box display="flex" alignItems="center" flex={1}>
+              <Checkbox
+                checked={task.status === "Completed"}
+                onChange={() => onComplete(task)}
+              />
+              <ListItemText
+                primary={task.title}
+                secondary={task.description}
+              />
+            </Box>
 
-            {/* Status chip in center */}
+            {/* Status chip */}
             <Chip
               label={task.status}
               color={task.status === "Completed" ? "success" : "default"}
@@ -28,7 +41,7 @@ const TaskList = ({ tasks, onEdit, onDelete }) => {
               sx={{ mx: 2 }}
             />
 
-            {/* Action buttons */}
+            {/* Edit/Delete buttons */}
             <Box display="flex" gap={1}>
               <IconButton onClick={() => onEdit(task)}>
                 <Edit />

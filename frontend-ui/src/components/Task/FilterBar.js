@@ -4,7 +4,7 @@ import { ButtonGroup, Button } from "@mui/material";
 const FilterBar = ({ filter, setFilter }) => {
   return (
     <ButtonGroup sx={{ mb: 2 }}>
-      {["All", "Pending", "Completed"].map((status) => (
+      {["All Projects"].map((status) => (
         <Button
           key={status}
           variant={filter === status ? "contained" : "outlined"}

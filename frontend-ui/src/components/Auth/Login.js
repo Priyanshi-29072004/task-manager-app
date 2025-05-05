@@ -14,8 +14,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(form); // Calls context login
-      navigate("/"); // Redirect after successful login
+      await login(form);
+      navigate("/"); 
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
       alert("Login failed: " + (err.response?.data?.message || err.message));
