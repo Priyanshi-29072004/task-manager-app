@@ -6,7 +6,6 @@ import {
   DialogActions,
   Button,
   TextField,
-  MenuItem,
 } from "@mui/material";
 
 const AddTaskModal = ({ open, onClose, onSubmit, selectedTask, clearSelected }) => {
