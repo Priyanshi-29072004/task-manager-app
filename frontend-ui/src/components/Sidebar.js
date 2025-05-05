@@ -1,10 +1,15 @@
 import React from "react";
-import { Drawer, List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 
-const Sidebar = ({ onSectionChange }) => {
+const Sidebar = ({ onSectionChange, currentSection }) => {
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const sections = ["Today",  "Completed", "Add Task"];
+  const sections = ["Today", "Upcoming", "Completed", "Add Task"];
 
   return (
     <Drawer variant="permanent" anchor="left">
@@ -14,9 +19,22 @@ const Sidebar = ({ onSectionChange }) => {
         </Typography>
         <List>
           {sections.map((section) => (
-            <ListItem button key={section} onClick={() => onSectionChange(section)}>
+            <ListItemButton
+              key={section}
+              selected={currentSection === section}
+              onClick={() => onSectionChange(section)}
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                },
+                "&.Mui-selected:hover": {
+                  backgroundColor: "#1565c0",
+                },
+              }}
+            >
               <ListItemText primary={section} />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </div>

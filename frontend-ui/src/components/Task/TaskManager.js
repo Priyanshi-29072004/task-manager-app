@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback,useMemo} from "react";
+// ✅ TaskManager.js (updated)
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Container,
   Paper,
@@ -16,7 +17,7 @@ import {
   deleteTask,
 } from "../../api/taskApi";
 import Sidebar from "../Sidebar";
-import AddTaskModal from "../AddTaskModal"; 
+import AddTaskModal from "../AddTaskModal";
 
 const TaskManager = () => {
   const [tasks, setTasks] = useState([]);
@@ -41,40 +42,39 @@ const TaskManager = () => {
     loadTasks();
   }, [loadTasks]);
 
-  
-
-const handleSubmit = async (task) => {
-  if (task._id) {
-    await updateTask(task._id, task);
-  } else {
-    task.status = "Pending";
-    if (!task.date) {
-      task.date = new Date().toISOString();
+  const handleSubmit = async (task) => {
+    if (task._id) {
+      await updateTask(task._id, task);
+    } else {
+      task.status = "Pending";
+      if (!task.date) {
+        task.date = new Date().toISOString();
+      }
+      await createTask(task);
     }
-    await createTask(task);
-  }
-  setOpenModal(false);
-  loadTasks();
-};
-
-
-const handleDelete = async (id) => {
-  try {
-    const token = JSON.parse(localStorage.getItem("user"))?.token;
-    await deleteTask(id, token);
-    loadTasks();
-  } catch (error) {
-    console.error("Error deleting task:", error);
-  }
-};
+  
+    setOpenModal(false);
+    setSelectedTask(null);
+    await loadTasks();
+  };
+  
+  const handleDelete = async (id) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user"))?.token;
+      await deleteTask(id, token);
+      await loadTasks();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
 
   const handleComplete = async (task) => {
     await updateTask(task._id, { ...task, status: "Completed" });
     setOpenSnackbar(true);
-    loadTasks();
+    await loadTasks();
   };
 
-const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
   let filteredTasks = tasks;
 
   if (currentSection === "Add Task") {
@@ -83,20 +83,32 @@ const today = new Date().toISOString().split("T")[0];
     filteredTasks = tasks.filter((t) => {
       if (!t.date || isNaN(new Date(t.date))) return false;
       const taskDate = new Date(t.date).toISOString().split("T")[0];
-      const todayDate = new Date().toISOString().split("T")[0];
-      return taskDate === todayDate && t.status !== "Completed";
+      return taskDate === today && t.status !== "Completed";
     });
   } else if (currentSection === "Completed") {
     filteredTasks = tasks.filter((t) => t.status === "Completed");
+  }else if (currentSection === "Upcoming") {
+    filteredTasks = tasks.filter((t) => {
+      const taskDate = new Date(t.date).toISOString().split("T")[0];
+      return taskDate > today && t.status !== "Completed";
+    });
   }
   
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Sidebar onSectionChange={(section) => {
-        setCurrentSection(section);
-        if (section === "Add Task") setOpenModal(true);
-      }} />
+      <Sidebar
+  currentSection={currentSection} // ✅ Pass it here
+  onSectionChange={(section) => {
+    if (section === "Add Task") {
+      setSelectedTask(null);
+      setOpenModal(true);
+    } else {
+      setCurrentSection(section);
+    }
+  }}
+/>
+
 
       <Container maxWidth="sm" sx={{ mt: 4 }}>
         <Typography variant="h5" gutterBottom>
@@ -104,18 +116,16 @@ const today = new Date().toISOString().split("T")[0];
         </Typography>
         <Paper sx={{ p: 3 }}>
           <FilterBar filter={filter} setFilter={setFilter} />
-          
           <TaskList
-  tasks={filteredTasks}
-  currentSection={currentSection}
-  onEdit={(task) => {
-    setSelectedTask(task);
-    setOpenModal(true); 
-  }}
-  onDelete={handleDelete}
-  onComplete={handleComplete}
-/>
-
+            tasks={filteredTasks}
+            currentSection={currentSection}
+            onEdit={(task) => {
+              setSelectedTask(task);
+              setOpenModal(true);
+            }}
+            onDelete={handleDelete}
+            onComplete={handleComplete}
+          />
         </Paper>
       </Container>
 

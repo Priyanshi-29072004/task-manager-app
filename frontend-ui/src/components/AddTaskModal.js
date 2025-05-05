@@ -18,11 +18,23 @@ const AddTaskModal = ({ open, onClose, onSubmit, selectedTask, clearSelected }) 
 
   useEffect(() => {
     if (selectedTask) {
-      setTask(selectedTask);
-    } else {
-      setTask({ title: "", description: "", date: "", status: "Pending" });
+      setTask({
+        title: selectedTask.title || "",
+        description: selectedTask.description || "",
+        date: selectedTask.date ? selectedTask.date.split("T")[0] : "",
+        status: selectedTask.status || "Pending",
+      });
+    } else if (open) {
+      setTask({
+        title: "",
+        description: "",
+        date: "",
+        status: "Pending",
+      });
     }
-  }, [selectedTask]);
+  }, [selectedTask, open]);
+  
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,6 +43,10 @@ const AddTaskModal = ({ open, onClose, onSubmit, selectedTask, clearSelected }) 
 
   const handleSubmit = () => {
     if (!task.title || !task.date) return;
+    if (selectedTask && selectedTask._id) {
+      task._id = selectedTask._id; // ✨ Attach _id for update
+    }
+  
     onSubmit(task);
     clearSelected();
   };
@@ -38,7 +54,16 @@ const AddTaskModal = ({ open, onClose, onSubmit, selectedTask, clearSelected }) 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>{selectedTask ? "Edit Task" : "Add Task"}</DialogTitle>
-      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+      <DialogContent
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    pt: 20, 
+    pb: 4, 
+  }}
+>
+
         <TextField
           name="title"
           label="Title"
@@ -63,13 +88,13 @@ const AddTaskModal = ({ open, onClose, onSubmit, selectedTask, clearSelected }) 
           InputLabelProps={{ shrink: true }}
           required
         />
-        <TextField
-          name="status"
-          label="Status"
-          value="Pending"
-          onChange={handleChange}
-        >
-        </TextField>
+          <TextField
+  name="status"
+  label="Status"
+  value={task.status}
+  onChange={handleChange}
+/>
+
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary">Cancel</Button>
