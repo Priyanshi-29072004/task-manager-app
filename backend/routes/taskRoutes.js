@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
+
 const {
   getTasks,
   createTask,
@@ -7,7 +9,7 @@ const {
   deleteTask,
 } = require("../controllers/taskController");
 
-router.get("/", getTasks); // This matches the frontend API call correctly
+router.get("/", getTasks);
 router.post("/", createTask);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);

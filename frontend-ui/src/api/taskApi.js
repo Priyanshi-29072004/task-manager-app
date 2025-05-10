@@ -9,7 +9,15 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const getTasks = () => API.get("/tasks");
+export const getTasks = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    return API.get(`/tasks`, { params: { userId: user._id } }); // Send userId as query parameter
+  } else {
+    return API.get("/tasks"); // Fallback for unauthenticated users (or handle accordingly)
+  }
+};
+
 export const createTask = (task) => API.post("/tasks", task);
 export const updateTask = (id, task) => API.put(`/tasks/${id}`, task);
 export const deleteTask = (id) => API.delete(`/tasks/${id}`);

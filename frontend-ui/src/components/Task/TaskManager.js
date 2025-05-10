@@ -15,14 +15,23 @@ const TaskManager = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [filter, setFilter] = useState("All");
 
+  // Get the user from localStorage (or use context)
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const loadTasks = async () => {
-    const res = await getTasks();
-    setTasks(res.data);
+    if (user) {
+      const res = await getTasks(user._id); // Pass userId to the API
+      setTasks(res.data);
+    } else {
+      // Handle scenario where the user is not logged in
+      // Maybe show an error or redirect to login
+      console.error("User not authenticated");
+    }
   };
 
   useEffect(() => {
     loadTasks();
-  }, []);
+  }, []); // Empty dependency array to run this once on component mount
 
   const handleSubmit = async (task) => {
     task._id ? await updateTask(task._id, task) : await createTask(task);
